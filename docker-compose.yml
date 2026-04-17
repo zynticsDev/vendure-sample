@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  vendure:
+    build: .
+    ports:
+      - "3000:3000"
+      - "3002:3002" # Admin UI
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: vendure
+      DB_USERNAME: vendure
+      DB_PASSWORD: vendure
+    volumes:
+      - .:/app
+    command: npm run start:server
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: vendure
+      POSTGRES_USER: vendure
+      POSTGRES_PASSWORD: vendure
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
