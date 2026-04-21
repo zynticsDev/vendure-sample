@@ -1,4 +1,6 @@
 import type {Metadata, Viewport} from "next";
+import {connection} from "next/server";
+import {Suspense} from "react";
 import {locale as rootLocale} from "next/root-params";
 import {hasLocale, NextIntlClientProvider} from "next-intl";
 import {Geist, Geist_Mono} from "next/font/google";
@@ -11,6 +13,7 @@ import {Toaster} from "@/components/ui/sonner";
 import {Navbar} from "@/components/layout/navbar";
 import {Footer} from "@/components/layout/footer";
 import {ThemeProvider} from "@/components/providers/theme-provider";
+import {AbandonedCartBrowserAlert} from "@/components/commerce/abandoned-cart-browser-alert";
 import {SITE_NAME, SITE_URL} from "@/lib/metadata";
 import "./globals.css";
 
@@ -77,6 +80,26 @@ export const viewport: Viewport = {
     ],
 };
 
+function ShopShellFallback() {
+    return (
+        <div className="flex flex-1 flex-col gap-4 px-4 py-8">
+            <div className="mx-auto h-14 w-full max-w-6xl animate-pulse rounded-md bg-muted/40" />
+            <div className="mx-auto min-h-[50vh] w-full max-w-6xl flex-1 animate-pulse rounded-md bg-muted/30" />
+        </div>
+    );
+}
+
+async function ShopRuntimeShell({children}: {children: React.ReactNode}) {
+    await connection();
+    return (
+        <>
+            <Navbar />
+            {children}
+            <Footer />
+        </>
+    );
+}
+
 export default async function LocaleLayout({children}: {children: React.ReactNode}) {
     const locale = await rootLocale();
 
@@ -94,10 +117,11 @@ export default async function LocaleLayout({children}: {children: React.ReactNod
             >
                 <NextIntlClientProvider locale={locale} messages={messages}>
                     <ThemeProvider>
-                        <Navbar />
-                        {children}
-                        <Footer/>
-                        <Toaster/>
+                        <AbandonedCartBrowserAlert />
+                        <Suspense fallback={<ShopShellFallback />}>
+                            <ShopRuntimeShell>{children}</ShopRuntimeShell>
+                        </Suspense>
+                        <Toaster />
                     </ThemeProvider>
                 </NextIntlClientProvider>
             </body>

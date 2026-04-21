@@ -9,6 +9,7 @@ import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@ven
 import { AssetServerPlugin } from '@vendure/asset-server-plugin';
 import { DashboardPlugin } from '@vendure/dashboard/plugin';
 import { GraphiqlPlugin } from '@vendure/graphiql-plugin';
+import { AbandonedCartAlertPlugin } from './plugins/abandoned-cart-alert/abandoned-cart-alert.plugin';
 import 'dotenv/config';
 import path from 'path';
 
@@ -43,15 +44,15 @@ export const config: VendureConfig = {
         type: 'postgres',
         // See the README.md "Migrations" section for an explanation of
         // the `synchronize` and `migrations` options.
-        synchronize: true,
+        synchronize: false,
         migrations: [path.join(__dirname, './migrations/*.+(js|ts)')],
         logging: false,
-        database: process.env.DB_NAME || 'vendure',
+        database: process.env.DB_NAME,
         schema: process.env.DB_SCHEMA,
-        host: process.env.DB_HOST || 'localhost',
-        port: +process.env.DB_PORT || 5432,
-        username: process.env.DB_USERNAME || 'vendure',
-        password: process.env.DB_PASSWORD || 'vendure',
+        host: process.env.DB_HOST,
+        port: +process.env.DB_PORT,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
     },
     paymentOptions: {
         paymentMethodHandlers: [dummyPaymentHandler],
@@ -93,5 +94,6 @@ export const config: VendureConfig = {
                 ? path.join(__dirname, '../dist/dashboard')
                 : path.join(__dirname, 'dashboard'),
         }),
+        AbandonedCartAlertPlugin,
     ],
 };

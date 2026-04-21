@@ -16,7 +16,7 @@ services:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
 
     mysql_db:
         image: mysql:8
@@ -30,7 +30,7 @@ services:
         ports:
             - "4306:3306"
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
 
     mariadb_db:
         image: mariadb:10
@@ -44,7 +44,7 @@ services:
         ports:
             - "3306:3306"
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
 
     # RECOMMENDED (especially for production)
     # Want to use our BullMQ with Redis instead of our default database job queue?
@@ -56,7 +56,7 @@ services:
         volumes:
             - redis_data:/data
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
 
     # RECOMMENDED
     # Want to use Typesense instead of our default search engine?
@@ -70,7 +70,7 @@ services:
         volumes:
             - typesense_data:/data
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
 
     # Want to use Elasticsearch instead of our default database engine?
     # Checkout the community Elasticsearch plugin: https://github.com/vendurehq/vendure-community-plugins
@@ -98,30 +98,30 @@ services:
         ports:
             - 9200:9200
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
 
 volumes:
     postgres_db_data:
         driver: local
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
     mysql_db_data:
         driver: local
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
     mariadb_db_data:
         driver: local
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
     typesense_data:
         driver: local
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
     elasticsearch_data:
         driver: local
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"
     redis_data:
         driver: local
         labels:
-            - "io.vendure.create.name=sample-vendure"
+            - "io.vendure.create.name=vendure-local"

@@ -138,6 +138,15 @@ export const GetActiveOrderQuery = graphql(`
     }
 `);
 
+export const GetAbandonedCartAlertStatusQuery = graphql(`
+    query GetAbandonedCartAlertStatus {
+        activeOrder {
+            id
+            isAbandonedCart
+        }
+    }
+`);
+
 export const GetActiveOrderForCheckoutQuery = graphql(`
     query GetActiveOrderForCheckout {
         activeOrder {

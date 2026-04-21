@@ -1,4 +1,4 @@
-# sample-vendure
+# vendure-local
 
 This project was generated with [`@vendure/create`](https://github.com/vendurehq/vendure/tree/master/packages/create).
 

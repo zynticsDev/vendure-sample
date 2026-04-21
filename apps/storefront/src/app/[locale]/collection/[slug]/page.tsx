@@ -62,49 +62,56 @@ export async function generateMetadata({
 }: PageProps<'/[locale]/collection/[slug]'>): Promise<Metadata> {
     const { slug } = await params;
     const locale = await getRouteLocale();
-    const result = await getCollectionMetadata(slug);
-    const collection = result.data.collection;
-
     const t = await getTranslations({locale, namespace: 'Product'});
 
-    if (!collection) {
+    try {
+        const result = await getCollectionMetadata(slug);
+        const collection = result.data.collection;
+
+        if (!collection) {
+            return {
+                title: t('collectionNotFound'),
+            };
+        }
+
+        const description =
+            truncateDescription(collection.description) ||
+            t('browseCollectionAt', {name: collection.name, siteName: SITE_NAME});
+        const ogLocale = toOgLocale(locale);
+        const collectionPath = `/collection/${collection.slug}`;
+
         return {
-            title: t('collectionNotFound'),
+            title: collection.name,
+            description,
+            alternates: {
+                canonical: buildCanonicalUrl(`/${locale}${collectionPath}`),
+                languages: Object.fromEntries(
+                    routing.locales.map((l) => [l, buildCanonicalUrl(`/${l}${collectionPath}`)])
+                ),
+            },
+            openGraph: {
+                title: collection.name,
+                description,
+                type: 'website',
+                locale: ogLocale,
+                url: buildCanonicalUrl(`/${locale}${collectionPath}`),
+                images: buildOgImages(collection.featuredAsset?.preview, collection.name),
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: collection.name,
+                description,
+                images: collection.featuredAsset?.preview
+                    ? [collection.featuredAsset.preview]
+                    : undefined,
+            },
+        };
+    } catch {
+        return {
+            title: `${slug} | ${SITE_NAME}`,
+            description: t('browseCollectionAt', {name: slug, siteName: SITE_NAME}),
         };
     }
-
-    const description =
-        truncateDescription(collection.description) ||
-        t('browseCollectionAt', {name: collection.name, siteName: SITE_NAME});
-    const ogLocale = toOgLocale(locale);
-    const collectionPath = `/collection/${collection.slug}`;
-
-    return {
-        title: collection.name,
-        description,
-        alternates: {
-            canonical: buildCanonicalUrl(`/${locale}${collectionPath}`),
-            languages: Object.fromEntries(
-                routing.locales.map((l) => [l, buildCanonicalUrl(`/${l}${collectionPath}`)])
-            ),
-        },
-        openGraph: {
-            title: collection.name,
-            description,
-            type: 'website',
-            locale: ogLocale,
-            url: buildCanonicalUrl(`/${locale}${collectionPath}`),
-            images: buildOgImages(collection.featuredAsset?.preview, collection.name),
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title: collection.name,
-            description,
-            images: collection.featuredAsset?.preview
-                ? [collection.featuredAsset.preview]
-                : undefined,
-        },
-    };
 }
 
 export default async function CollectionPage({params, searchParams}: PageProps<'/[locale]/collection/[slug]'>) {

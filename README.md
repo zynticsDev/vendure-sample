@@ -1,4 +1,4 @@
-# sample-vendure
+# vendure-local
 
 A full-stack e-commerce application built with [Vendure](https://www.vendure.io/) and [Next.js](https://nextjs.org/).
 
@@ -7,7 +7,7 @@ A full-stack e-commerce application built with [Vendure](https://www.vendure.io/
 This is a monorepo using npm workspaces:
 
 ```
-sample-vendure/
+vendure-local/
 ├── apps/
 │   ├── server/       # Vendure backend (GraphQL API, Admin Dashboard)
 │   └── storefront/   # Next.js frontend
